@@ -14,11 +14,11 @@ I've been there. Windows has a clipboard history feature built in — BUT it's l
 But we can do better — and we will.
 
 🥅 Goal: To build a better clipboard manager. BetterClip will have:
-- [x]Unlimited history
+- [x] Unlimited history
 - [x] Searchability
 - [x] Persistent storage across reboots
 - [x] Auto-deletion of old records
-- [] Restore on startup?
+- []  Restore on startup?
 - [x] Support for text, images, files, URLs
 - [x] Tabs for categorization [All | Texts | Images | Files | URLs | +]
 - [x] Option to pin
