@@ -1,0 +1,2 @@
+ALTER TABLE clipboard
+ADD pin BOOLEAN;

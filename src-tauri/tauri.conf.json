@@ -1,0 +1,51 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "betterclip",
+  "version": "0.1.0",
+  "identifier": "com.betterclip.app",
+  "build": {
+    "beforeDevCommand": "pnpm dev",
+    "devUrl": "http://localhost:1420",
+    "beforeBuildCommand": "pnpm build",
+    "frontendDist": "../dist"
+  },
+  "plugins": {
+    "sql": {
+      "preload": [
+        "sqlite:betterClip1.db"
+      ]
+    }
+  },
+  "app": {
+    "windows": [
+      {
+        "title": "betterclip",
+        "width": 800,
+        "height": 600
+      }
+    ],
+    "security": {
+      "csp": null,
+      "assetProtocol": {
+        "enable": true,
+        "scope": [
+          "$APPCACHE/**",
+          "$RESOURCE/**",
+          "$LOCALDATA/com.betterclip.app/**/*"
+        ]
+      }
+    }
+  },
+  "bundle": {
+    "active": true,
+    "targets": "all",
+    "icon": [
+      "icons/32x32.png",
+      "icons/128x128.png",
+      "icons/128x128@2x.png",
+      "icons/icon.icns",
+      "icons/icon.ico"
+    ]
+  }
+
+}
