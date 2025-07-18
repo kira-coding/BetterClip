@@ -21,11 +21,11 @@
       {
         "title": "betterclip",
         "width": 800,
-        "height": 600
+        "height": 600,
+        "decorations": false
       }
     ],
     "security": {
-      "csp": null,
       "assetProtocol": {
         "enable": true,
         "scope": [
@@ -33,6 +33,15 @@
           "$RESOURCE/**",
           "$LOCALDATA/com.betterclip.app/**/*"
         ]
+      },
+      "csp": {
+        
+        "connect-src": "ipc: http://ipc.localhost",
+        "font-src": [
+          "https://fonts.gstatic.com"
+        ],
+        "img-src": "'self' asset: http://asset.localhost blob: data:",
+        "style-src": "'unsafe-inline' 'self' https://fonts.googleapis.com"
       }
     }
   },
@@ -47,5 +56,4 @@
       "icons/icon.ico"
     ]
   }
-
 }

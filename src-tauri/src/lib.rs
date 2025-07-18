@@ -3,6 +3,7 @@ use tauri_plugin_global_shortcut::{Code, GlobalShortcutExt, Modifiers, Shortcut,
 pub mod database;
 pub mod tray_setup;
 use crate::tray_setup::setup_tray;
+use tauri_plugin_autostart::MacosLauncher;
 use tauri_plugin_sql::{Migration, MigrationKind};
 // L`earn more about Tauri commands at https://tauri.app/develop/calling-rust/
 #[tauri::command]
@@ -17,10 +18,18 @@ fn search(query: &str) -> String {
 pub fn run() {
     let ctrl_n_shortcut = Shortcut::new(Some(Modifiers::SUPER), Code::Backquote);
     tauri::Builder::default()
+        
+        .plugin(tauri_plugin_autostart::init(
+            MacosLauncher::LaunchAgent,
+            Some(vec!["--flag1", "--flag2"]),
+        ))
         .plugin(tauri_plugin_fs::init())
         .plugin(tauri_plugin_global_shortcut::Builder::new().build())
         .setup(move |app| {
             setup_tray(app)?;
+            if let Some(window) = app.get_webview_window("main") {
+                window.hide().unwrap()
+            }
             app.global_shortcut().register(ctrl_n_shortcut)?;
             Ok(())
         })
@@ -41,9 +50,8 @@ pub fn run() {
                                         }
                                     }
                                 }
-
                             }
-                            ShortcutState::Released=>{
+                            ShortcutState::Released => {
                                 println!("released")
                             }
                         }

@@ -27,5 +27,6 @@ tauri-plugin-sql = { version = "2", features = ["sqlite"] }
 tauri-plugin-clipboard-x = "2.0.1"
 
 [target.'cfg(not(any(target_os = "android", target_os = "ios")))'.dependencies]
+tauri-plugin-autostart = "2"
 tauri-plugin-global-shortcut = "2"
 

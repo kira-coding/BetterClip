@@ -16,6 +16,7 @@ import { BsIncognito } from "react-icons/bs";
 import { convertFileSrc } from "@tauri-apps/api/core";
 import { MdDeleteForever } from "react-icons/md";
 import { RiUnpinFill } from "react-icons/ri";
+import { enable, isEnabled, disable } from '@tauri-apps/plugin-autostart';
 
 
 function App() {
@@ -28,6 +29,7 @@ function App() {
   const [selectedData, setSelectedData] = useState<any>()
   const [mode, setMode] = useState("")
   const [pin, setPin] = useState(false)
+  const [autoStart, setAutoStart] = useState(true)
   useEffect(() => {
     let listenToClipboard = async () => {
       // await startListening();
@@ -93,9 +95,12 @@ function App() {
       // To stop listening at a later point, you can call unlisten()
       // unlisten();
     }
-
+    let manageAutostart = async () => {
+      let start = await isEnabled()
+      setAutoStart(start)
+    }
     listenToClipboard();
-
+    manageAutostart()
   }, [])
 
   useEffect(() => {
@@ -105,6 +110,14 @@ function App() {
       let data: Array<any> = await db.select("SELECT * from clipboard ORDER BY datetime DESC");
 
       setClipboard(data)
+    }
+    const StartUp = async () => {
+      if (autoStart) {
+        await enable()
+      }
+      else {
+        await disable()
+      }
     }
     const Pin = async () => {
       const db = await Database.load('sqlite:betterClip1.db');
@@ -141,6 +154,10 @@ function App() {
       Copy()
       setMode("")
     }
+    else if (mode == "Startup") {
+      StartUp()
+      setMode("")
+    }
 
   }, [mode])
   useEffect(() => {
@@ -155,6 +172,8 @@ function App() {
     }
     clearDatabase()
   }, [clear])
+
+
   useEffect(() => {
     const listen = async () => {
       if (incognito) {
@@ -203,6 +222,22 @@ function App() {
   }, [filter, clipboard, term])
   return (
     <>
+      <div className="inline-flex  items-center absolute top-2 right-7 w-28 mb-4">
+
+        <label className="flex items-center cursor-pointer relative">
+          <input onChange={() => {
+            setAutoStart(!autoStart)
+            setMode("Startup")
+          }} type="checkbox"  value={Number(autoStart)}  className="peer h-5 w-5 cursor-pointer transition-all appearance-none rounded shadow hover:shadow-md border border-slate-300 checked:bg-slate-800 checked:border-slate-800" id="check" />
+          <span className="absolute text-white opacity-0 peer-checked:opacity-100 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 pointer-events-none">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5" viewBox="0 0 20 20" fill="currentColor" stroke="currentColor" stroke-width="1">
+              <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+            </svg>
+          </span>
+        </label>
+
+        <label htmlFor="check" className="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Auto-Start</label>
+      </div>
       <main className="bg-tone w-screen  text-primary   min-h-screen flex font-roboto  flex-col justify-start items-start pl-8 pt-12">
         <div className="flex w-5/6   justify-between items-baseline">
           <Search setTerm={setTerm} term={term} />
@@ -234,6 +269,7 @@ function App() {
           let Delete = () => {
             return <button id={data.id} onClick={(e) => {
               e.preventDefault()
+              e.stopPropagation()
               setSelectedData(data)
               setMode("Delete")
             }} className={"text-primary absolute top-0 right-1  w-6 h-5 flex justify-center text-center rounded-b-md bg-red-900 hover:bg-slate-700 transition-colors"}><MdDeleteForever /></button>;
@@ -241,6 +277,7 @@ function App() {
           let Pin = () => {
             return <button id={data.id} onClick={(e) => {
               e.preventDefault()
+              e.stopPropagation()
               setSelectedData(data)
               setMode("Pin")
 
@@ -268,7 +305,7 @@ function App() {
             case "file": {
               color = "bg-yellow-700"
               Tag = () => <span className={"text-primary absolute top-0 left-1  flex items-center justify-center w-12 h-5 text-center rounded-b-md " + color}><FaRegFile />{type}</span>;
-              let file_name =JSON.parse(data.value)
+              let file_name = JSON.parse(data.value)
               Content = () => <p> <span className="bg-slate-500 p-1 rounded-md my-4 ">File name</span>: {file_name.join("\n")}</p>
               break
             };
@@ -290,7 +327,7 @@ function App() {
               <button key={index} onClick={() => {
                 setSelectedData(data)
                 setMode("Copy")
-              }} className={"p-4 w-11/12 min-h-8 relative overflow-x-scroll bg-accent rounded-lg m-2"}>
+              }} className={"p-4 w-11/12 min-h-8 relative overflow-x-scroll max-h-80 bg-accent rounded-lg m-2"}>
                 <Tag></Tag>
                 <Content></Content>
                 <Pin></Pin>

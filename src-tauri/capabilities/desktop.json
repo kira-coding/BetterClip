@@ -9,6 +9,10 @@
     "main"
   ],
   "permissions": [
-    "global-shortcut:default"
+    "global-shortcut:default",
+    "autostart:allow-enable",
+    "autostart:allow-disable",
+    "autostart:allow-is-enabled",
+    "autostart:default"
   ]
 }
