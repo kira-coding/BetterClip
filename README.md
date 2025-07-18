@@ -1,4 +1,4 @@
-#BetterClip
+# BetterClip
 
 Ever found yourself copying something useful, only to accidentally overwrite it with something else seconds later?
 
