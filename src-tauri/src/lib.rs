@@ -1,5 +1,5 @@
 use tauri::{self, Manager};
-use tauri_plugin_global_shortcut::{Code, GlobalShortcutExt, Modifiers, Shortcut};
+use tauri_plugin_global_shortcut::{Code, GlobalShortcutExt, Modifiers, Shortcut, ShortcutState};
 pub mod database;
 pub mod tray_setup;
 use crate::tray_setup::setup_tray;
@@ -10,8 +10,8 @@ fn greet(name: &str) -> String {
     format!(" {}", name)
 }
 #[tauri::command]
-fn search(query:&str)->String{
-format!("{}",query)
+fn search(query: &str) -> String {
+    format!("{}", query)
 }
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
@@ -27,16 +27,24 @@ pub fn run() {
         .plugin(tauri_plugin_opener::init())
         .plugin(
             tauri_plugin_global_shortcut::Builder::new()
-                .with_handler(move |app, shortcut, _event| {
+                .with_handler(move |app, shortcut, event| {
                     println!("{:?}", shortcut);
                     if shortcut == &ctrl_n_shortcut {
-                        if let Some(window) = app.get_webview_window("main") {
-                            if let Ok(open) = window.is_visible() {
-                                if open == true {
-                                    window.hide().unwrap();
-                                } else {
-                                    window.show().unwrap();
+                        match event.state() {
+                            ShortcutState::Pressed => {
+                                if let Some(window) = app.get_webview_window("main") {
+                                    if let Ok(open) = window.is_visible() {
+                                        if open == true {
+                                            window.hide().unwrap();
+                                        } else {
+                                            window.show().unwrap();
+                                        }
+                                    }
                                 }
+
+                            }
+                            ShortcutState::Released=>{
+                                println!("released")
                             }
                         }
                     }
@@ -80,7 +88,7 @@ pub fn run() {
                             sql: include_str!("../../migrations/5_add_file_type.sql"),
                             kind: MigrationKind::Up,
                         },
-                                                Migration {
+                        Migration {
                             version: 6,
                             description: "add pin",
                             sql: include_str!("../../migrations/6_pid.sql"),
@@ -90,7 +98,7 @@ pub fn run() {
                 )
                 .build(),
         )
-        .invoke_handler(tauri::generate_handler![greet,search])
+        .invoke_handler(tauri::generate_handler![greet, search])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }
