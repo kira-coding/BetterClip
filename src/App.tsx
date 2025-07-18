@@ -130,7 +130,7 @@ function App() {
       setClipboard(data)
     }
     const Copy = async () => {
-      if (selectedData.type == "text") {
+      if (selectedData.type == "text"|| selectedData.type=="link") {
         await writeText(selectedData.value)
       }
       else if (selectedData.type == "image") {
@@ -298,7 +298,7 @@ function App() {
             case "image": {
               color = "bg-orange-700"
               Tag = () => <h4 className={"text-primary absolute flex items-center justify-center top-0 left-1 w-24 h-5 text-center rounded-b-lg " + color}> <FaImage /> {type}</h4>
-              Content = () => <img className={"w-1/4 "} src={convertFileSrc(data.value)} />
+              Content = () => <img className={"w-1/4 "} src={convertFileSrc(data.value)} alt={convertFileSrc(data.value)} />
               break
             }
 
