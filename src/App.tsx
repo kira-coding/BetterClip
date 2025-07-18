@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 // import { invoke } from "@tauri-apps/api/core";
 
-import { startListening, onClipboardChange, stopListening } from "tauri-plugin-clipboard-x-api";
+import { startListening, onClipboardChange, stopListening, writeFiles, writeImage, writeText } from "tauri-plugin-clipboard-x-api";
 import Database from '@tauri-apps/plugin-sql';
 import Search from "../components/Search";
 import Filter from "../components/Filter";
@@ -116,12 +116,28 @@ function App() {
 
       setClipboard(data)
     }
+    const Copy = async () => {
+      if (selectedData.type == "text") {
+        await writeText(selectedData.value)
+      }
+      else if (selectedData.type == "image") {
+        await writeImage(selectedData.value)
+      }
+      else if (selectedData.type == "file") {
+        await writeFiles(selectedData.value)
+      }
+    }
     if (mode == "Delete") {
       Delete()
       setMode("")
     }
     else if (mode == "Pin") {
       Pin()
+      setMode("")
+    }
+    else if (mode == "Copy") {
+
+      Copy()
       setMode("")
     }
 
@@ -270,12 +286,15 @@ function App() {
           }
           if (pin && pinned || !pin) {
             return (
-              <div key={index} className={"p-4 w-11/12 min-h-8 relative bg-accent rounded-lg m-2"}>
+              <button key={index} onClick={() => {
+                setSelectedData(data)
+                setMode("Copy")
+              }} className={"p-4 w-11/12 min-h-8 relative bg-accent rounded-lg m-2"}>
                 <Tag></Tag>
                 <Content></Content>
                 <Pin></Pin>
                 <Delete></Delete>
-              </div>)
+              </button>)
           }
         })}
 
