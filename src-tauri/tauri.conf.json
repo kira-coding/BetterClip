@@ -26,23 +26,17 @@
       }
     ],
     "security": {
+      "dangerousDisableAssetCspModification": true,
       "assetProtocol": {
         "enable": true,
         "scope": [
           "$APPCACHE/**",
           "$RESOURCE/**",
-          "$LOCALDATA/com.betterclip.app/**/*"
+          "$LOCALDATA/com.betterclip.app/**/*",
+          "**/*"
         ]
       },
-      "csp": {
-        
-        "connect-src": "ipc: http://ipc.localhost",
-        "font-src": [
-          "https://fonts.gstatic.com"
-        ],
-        "img-src": "'self' asset: http://asset.localhost blob: data:",
-        "style-src": "'unsafe-inline' 'self' https://fonts.googleapis.com"
-      }
+      "csp": "default-src 'self' ipc: http://ipc.localhost; img-src 'self' asset: http://asset.localhost"
     }
   },
   "bundle": {
