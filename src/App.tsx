@@ -124,7 +124,8 @@ function App() {
         await writeImage(selectedData.value)
       }
       else if (selectedData.type == "file") {
-        await writeFiles(selectedData.value)
+
+        await writeFiles(JSON.parse(selectedData.value))
       }
     }
     if (mode == "Delete") {
@@ -267,8 +268,8 @@ function App() {
             case "file": {
               color = "bg-yellow-700"
               Tag = () => <span className={"text-primary absolute top-0 left-1  flex items-center justify-center w-12 h-5 text-center rounded-b-md " + color}><FaRegFile />{type}</span>;
-              let file_name = data.value.substring(data.value.lastIndexOf("/") + 1, data.value.length - 2)
-              Content = () => <p> <span className="bg-slate-500 p-1 rounded-md my-4">File name</span>: {file_name}</p>
+              let file_name =JSON.parse(data.value)
+              Content = () => <p> <span className="bg-slate-500 p-1 rounded-md my-4 ">File name</span>: {file_name.join("\n")}</p>
               break
             };
             case "link": {
@@ -289,7 +290,7 @@ function App() {
               <button key={index} onClick={() => {
                 setSelectedData(data)
                 setMode("Copy")
-              }} className={"p-4 w-11/12 min-h-8 relative bg-accent rounded-lg m-2"}>
+              }} className={"p-4 w-11/12 min-h-8 relative overflow-x-scroll bg-accent rounded-lg m-2"}>
                 <Tag></Tag>
                 <Content></Content>
                 <Pin></Pin>
